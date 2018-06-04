@@ -9,18 +9,27 @@
 #include <vector>
 using namespace v8;
 
-int verifyEH(const char *hdr, const std::vector<unsigned char> &soln){
-  unsigned int n = 144;
-  unsigned int k = 5;
-
+int verifyEH(const char *hdr, const std::vector<unsigned char> &soln, unsigned int n, unsigned int k){
   // Hash state
   crypto_generichash_blake2b_state state;
   EhInitialiseState(n, k, state);
 
   crypto_generichash_blake2b_update(&state, (const unsigned char*)hdr, 140);
 
-  bool isValid = Eh144_5.IsValidSolution(state, soln);
-  
+  bool isValid = false;
+
+  if (n == 96 && k == 3) {
+    isValid = Eh96_3.IsValidSolution(state, soln);
+  } else if (n == 200 && k == 9) {
+    isValid = Eh200_9.IsValidSolution(state, soln);
+  } else if (n == 192 && k == 7) {
+    isValid = Eh192_7.IsValidSolution(state, soln);
+  } else if (n == 96 && k == 5) {
+    isValid = Eh96_5.IsValidSolution(state, soln);
+  } else if (n == 48 && k == 5) {
+    isValid = Eh48_5.IsValidSolution(state, soln);
+  }
+
   return isValid;
 }
 
@@ -28,7 +37,9 @@ void Verify(const v8::FunctionCallbackInfo<Value>& args) {
   Isolate* isolate = Isolate::GetCurrent();
   HandleScope scope(isolate);
 
-  if (args.Length() < 2) {
+  printf("args.lenght()=%d\n", args.Length());
+
+  if (args.Length() < 4) {
   isolate->ThrowException(Exception::TypeError(
     String::NewFromUtf8(isolate, "Wrong number of arguments")));
   return;
@@ -36,6 +47,9 @@ void Verify(const v8::FunctionCallbackInfo<Value>& args) {
 
   Local<Object> header = args[0]->ToObject();
   Local<Object> solution = args[1]->ToObject();
+  unsigned int n = args[2]->Uint32Value();
+  unsigned int k = args[3]->Uint32Value();
+  printf("n=%d,k=%d\n", n, k);
 
   if(!node::Buffer::HasInstance(header) || !node::Buffer::HasInstance(solution)) {
   isolate->ThrowException(Exception::TypeError(
@@ -53,7 +67,7 @@ void Verify(const v8::FunctionCallbackInfo<Value>& args) {
 
   std::vector<unsigned char> vecSolution(soln, soln + node::Buffer::Length(solution));
 
-  bool result = verifyEH(hdr, vecSolution);
+  bool result = verifyEH(hdr, vecSolution, n, k);
   args.GetReturnValue().Set(result);
 
 }

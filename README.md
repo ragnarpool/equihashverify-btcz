@@ -1,4 +1,4 @@
-# Equihash - Zcash Implementation
+# Equihash - Zcash & LitecoinZ & derivate Implementation
 nodejs native binding to check for valid Equihash solutions
 
 # Dependencies
@@ -13,7 +13,7 @@ var ev = require('bindings')('equihashverify.node');
 var header = new Buffer(..., 'hex');
 var solution = new Buffer(..., 'hex'); //do not include byte size preamble "fd4005"
 
-ev.verify(header, solution);
+ev.verify(header, solution, n, k);
 //returns boolean
 ````
 # Test Suite:
