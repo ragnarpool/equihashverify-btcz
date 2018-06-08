@@ -1,5 +1,6 @@
 // Copyright (c) 2016 Jack Grigg
 // Copyright (c) 2016 The Zcash developers
+// Copyright (c) 2017-2018 The LitecoinZ developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -19,7 +20,6 @@
 #include <vector>
 
 #include <boost/static_assert.hpp>
-
 
 typedef crypto_generichash_blake2b_state eh_HashState;
 typedef uint32_t eh_index;

@@ -1,5 +1,6 @@
 // Copyright (c) 2016 Jack Grigg
 // Copyright (c) 2016 The Zcash developers
+// Copyright (c) 2017-2018 The LitecoinZ developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -16,9 +17,9 @@
 #include "config/bitcoin-config.h"
 #endif
 
-#include "compat/endian.h"
+#include "crypto/common.h"
 #include "crypto/equihash.h"
-#include "util.h"
+#include "../util.h"
 
 #include <algorithm>
 #include <iostream>
@@ -718,8 +719,6 @@ invalidsolution:
     return false;
 }
 #endif // ENABLE_MINING
-
-
 
 template<unsigned int N, unsigned int K>
 bool Equihash<N,K>::IsValidSolution(const eh_HashState& base_state, std::vector<unsigned char> soln)

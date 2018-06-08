@@ -16,20 +16,23 @@ int verifyEH(const char *hdr, const std::vector<unsigned char> &soln, unsigned i
 
   crypto_generichash_blake2b_update(&state, (const unsigned char*)hdr, 140);
 
-  bool isValid = false;
-
+  bool isValid;
   if (n == 96 && k == 3) {
-    isValid = Eh96_3.IsValidSolution(state, soln);
+      isValid = Eh96_3.IsValidSolution(state, soln);
   } else if (n == 200 && k == 9) {
-    isValid = Eh200_9.IsValidSolution(state, soln);
+      isValid = Eh200_9.IsValidSolution(state, soln);
+  } else if (n == 144 && k == 5) {
+      isValid = Eh144_5.IsValidSolution(state, soln);
   } else if (n == 192 && k == 7) {
-    isValid = Eh192_7.IsValidSolution(state, soln);
+      isValid = Eh192_7.IsValidSolution(state, soln);
   } else if (n == 96 && k == 5) {
-    isValid = Eh96_5.IsValidSolution(state, soln);
+      isValid = Eh96_5.IsValidSolution(state, soln);
   } else if (n == 48 && k == 5) {
-    isValid = Eh48_5.IsValidSolution(state, soln);
+      isValid = Eh48_5.IsValidSolution(state, soln);
+  } else {
+      throw std::invalid_argument("Unsupported Equihash parameters");
   }
-
+  
   return isValid;
 }
 
@@ -37,9 +40,7 @@ void Verify(const v8::FunctionCallbackInfo<Value>& args) {
   Isolate* isolate = Isolate::GetCurrent();
   HandleScope scope(isolate);
 
-  printf("args.lenght()=%d\n", args.Length());
-
-  if (args.Length() < 4) {
+  if (args.Length() < 2) {
   isolate->ThrowException(Exception::TypeError(
     String::NewFromUtf8(isolate, "Wrong number of arguments")));
   return;
@@ -49,7 +50,6 @@ void Verify(const v8::FunctionCallbackInfo<Value>& args) {
   Local<Object> solution = args[1]->ToObject();
   unsigned int n = args[2]->Uint32Value();
   unsigned int k = args[3]->Uint32Value();
-  printf("n=%d,k=%d\n", n, k);
 
   if(!node::Buffer::HasInstance(header) || !node::Buffer::HasInstance(solution)) {
   isolate->ThrowException(Exception::TypeError(

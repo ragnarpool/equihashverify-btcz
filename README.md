@@ -1,4 +1,4 @@
-# Equihash - Zcash & LitecoinZ & derivate Implementation
+# Equihash - Zcash Implementation
 nodejs native binding to check for valid Equihash solutions
 
 # Dependencies
